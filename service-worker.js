@@ -1,4 +1,4 @@
-/* global self, caches, fetch, URL, Request */
+/* global self, caches, fetch, URL, Request, setTimeout */
 
 const APP_CACHE = 'brouter-navi-app-shell-v1'
 const TILE_CACHE = 'brouter-navi-viewed-tiles-v1'
@@ -6,6 +6,7 @@ const MAX_TILE_COUNT = 1200
 const TILE_TRIM_TARGET = 1100
 const STATUS_WRITE_INTERVAL = 25
 const FAILURE_BACKOFF_MS = [30_000, 120_000, 600_000]
+const APP_SHELL_FALLBACK_DELAY_MS = 1_500
 
 const workerUrl = new URL(self.location.href)
 let allowedTilePrefixes = workerUrl.searchParams.get('tileCache') === 'osm'
@@ -182,16 +183,46 @@ async function tileResult(request) {
   }
 }
 
-async function navigationResponse(request) {
+async function navigationResult(request) {
   const cache = await caches.open(APP_CACHE)
-  try {
-    const response = await fetch(request)
-    if (response.ok) await cache.put(shellUrl, response.clone())
-    return response
-  } catch (error) {
-    const cached = await cache.match(shellUrl)
-    if (cached) return cached
-    throw error
+  const cached = await cache.match(shellUrl)
+  const networkResult = fetch(request).then(
+    (response) => ({ response }),
+    (error) => ({ error }),
+  )
+  const storeNetworkResponse = async (result) => {
+    if ('response' in result && result.response.ok) {
+      await cache.put(shellUrl, result.response.clone())
+    }
+  }
+
+  if (!cached) {
+    const result = await networkResult
+    if ('error' in result) throw result.error
+    return {
+      response: result.response,
+      completion: storeNetworkResponse(result),
+    }
+  }
+
+  const result = await Promise.race([
+    networkResult,
+    new Promise((resolve) => {
+      setTimeout(() => resolve({ fallback: true }), APP_SHELL_FALLBACK_DELAY_MS)
+    }),
+  ])
+  if ('response' in result) {
+    return {
+      response: result.response,
+      completion: storeNetworkResponse(result),
+    }
+  }
+  if ('error' in result) {
+    return { response: cached, completion: Promise.resolve() }
+  }
+  return {
+    response: cached,
+    completion: networkResult.then(storeNetworkResponse).catch(() => undefined),
   }
 }
 
@@ -279,7 +310,11 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url)
   if (isVersionManifest(url)) return
   if (request.mode === 'navigate') {
-    event.respondWith(navigationResponse(request))
+    const result = navigationResult(request)
+    event.respondWith(result.then(({ response }) => response))
+    event.waitUntil(
+      result.then(({ completion }) => completion).catch(() => undefined),
+    )
     return
   }
   if (isAllowedTileRequest(request)) {
