@@ -30,7 +30,7 @@ function isShellAsset(url) {
   if (url.origin !== scopeUrl.origin || !url.pathname.startsWith(scopeUrl.pathname)) return false
   if (isVersionManifest(url) || url.pathname.includes('/api/')) return false
   return url.pathname.includes('/assets/') ||
-    /\.(?:css|js|png|svg|webmanifest)$/.test(url.pathname)
+    /\.(?:css|js|png|svg|webp|webmanifest)$/.test(url.pathname)
 }
 
 function isAllowedTileRequest(request) {
