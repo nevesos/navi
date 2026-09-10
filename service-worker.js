@@ -82,9 +82,9 @@ function recordTileSuccess(host) {
 }
 
 async function fetchTile(request) {
-  // CacheStorage is the single application-managed persistent tile cache.
-  // Avoid a second, separately managed copy in the browser HTTP cache.
-  const response = await fetch(new Request(request, { cache: 'no-store' }))
+  // Honor the source's HTTP caching headers. CacheStorage remains the separate,
+  // application-managed offline cache for tiles that were actually viewed.
+  const response = await fetch(new Request(request, { cache: 'default' }))
   if (!response.ok && response.type !== 'opaque') throw new Error(`Tile HTTP ${response.status}`)
   return response
 }
