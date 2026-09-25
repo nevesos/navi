@@ -99,6 +99,10 @@ function responseCacheable(response) {
   return !/(?:^|,)\s*(?:no-store|private)(?:\s|,|$)/i.test(cacheControl)
 }
 
+function cachedResponseCompatible(request, response) {
+  return response.type !== 'opaque' || request.mode === 'no-cors'
+}
+
 async function storeTile(request, response, cache, isNewTile) {
   try {
     if (tileCountEstimate === null) tileCountEstimate = (await cache.keys()).length
@@ -151,7 +155,10 @@ function queueTileCacheClear(target, requestId) {
 
 async function tileResult(request) {
   const cache = await caches.open(TILE_CACHE)
-  const cached = await cache.match(request)
+  const matched = await cache.match(request)
+  const cached = matched && cachedResponseCompatible(request, matched)
+    ? matched
+    : undefined
   if (cached && responseFresh(cached)) {
     return { response: cached, completion: Promise.resolve() }
   }
