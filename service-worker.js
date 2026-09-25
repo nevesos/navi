@@ -63,10 +63,15 @@ async function broadcastStatusChanged() {
   for (const client of clients) client.postMessage({ type: 'OFFLINE_STATUS_CHANGED' })
 }
 
-function recordTileFailure(host) {
+function recordTileFailure(host, attemptStartedAt) {
   const previous = hostFailures.get(host)
-  const failures = Math.min((previous?.failures ?? 0) + 1, FAILURE_BACKOFF_MS.length)
   const now = Date.now()
+  if (previous && attemptStartedAt < previous.retryAt) {
+    lastTileFailureAt = now
+    void broadcastStatusChanged()
+    return
+  }
+  const failures = Math.min((previous?.failures ?? 0) + 1, FAILURE_BACKOFF_MS.length)
   hostFailures.set(host, {
     failures,
     retryAt: now + FAILURE_BACKOFF_MS[failures - 1],
@@ -159,6 +164,7 @@ async function tileResult(request) {
   }
 
   if (cached) {
+    const attemptStartedAt = Date.now()
     const completion = fetchTile(request)
       .then((response) => {
         recordTileSuccess(host)
@@ -166,10 +172,11 @@ async function tileResult(request) {
           ? queueTileStore(request, response, cache, false)
           : undefined
       })
-      .catch(() => recordTileFailure(host))
+      .catch(() => recordTileFailure(host, attemptStartedAt))
     return { response: cached, completion }
   }
 
+  const attemptStartedAt = Date.now()
   try {
     const response = await fetchTile(request)
     recordTileSuccess(host)
@@ -178,7 +185,7 @@ async function tileResult(request) {
       : Promise.resolve()
     return { response, completion }
   } catch (error) {
-    recordTileFailure(host)
+    recordTileFailure(host, attemptStartedAt)
     throw error
   }
 }
