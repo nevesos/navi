@@ -1,0 +1,221 @@
+{
+  "food": {
+    "x": 0,
+    "y": 0,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 1
+  },
+  "cafe": {
+    "x": 24,
+    "y": 0,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 1
+  },
+  "shop": {
+    "x": 48,
+    "y": 0,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 1
+  },
+  "lodging": {
+    "x": 72,
+    "y": 0,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 1
+  },
+  "bicycle": {
+    "x": 96,
+    "y": 0,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 1
+  },
+  "repair": {
+    "x": 120,
+    "y": 0,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 1
+  },
+  "water": {
+    "x": 144,
+    "y": 0,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 1
+  },
+  "toilets": {
+    "x": 168,
+    "y": 0,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 1
+  },
+  "health": {
+    "x": 192,
+    "y": 0,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 1
+  },
+  "transport": {
+    "x": 216,
+    "y": 0,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 1
+  },
+  "parking": {
+    "x": 240,
+    "y": 0,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 1
+  },
+  "information": {
+    "x": 264,
+    "y": 0,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 1
+  },
+  "attraction": {
+    "x": 288,
+    "y": 0,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 1
+  },
+  "civic": {
+    "x": 312,
+    "y": 0,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 1
+  },
+  "generic": {
+    "x": 336,
+    "y": 0,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 1
+  },
+  "route-shield-international": {
+    "x": 360,
+    "y": 0,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 1,
+    "stretchX": [
+      [
+        7,
+        17
+      ]
+    ],
+    "stretchY": [
+      [
+        7,
+        17
+      ]
+    ],
+    "content": [
+      5,
+      5,
+      19,
+      19
+    ]
+  },
+  "route-shield-national": {
+    "x": 384,
+    "y": 0,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 1,
+    "stretchX": [
+      [
+        7,
+        17
+      ]
+    ],
+    "stretchY": [
+      [
+        7,
+        17
+      ]
+    ],
+    "content": [
+      5,
+      5,
+      19,
+      19
+    ]
+  },
+  "route-shield-regional": {
+    "x": 408,
+    "y": 0,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 1,
+    "stretchX": [
+      [
+        7,
+        17
+      ]
+    ],
+    "stretchY": [
+      [
+        7,
+        17
+      ]
+    ],
+    "content": [
+      5,
+      5,
+      19,
+      19
+    ]
+  },
+  "route-shield-local": {
+    "x": 432,
+    "y": 0,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 1,
+    "stretchX": [
+      [
+        7,
+        17
+      ]
+    ],
+    "stretchY": [
+      [
+        7,
+        17
+      ]
+    ],
+    "content": [
+      5,
+      5,
+      19,
+      19
+    ]
+  },
+  "woodland-pattern": {
+    "x": 456,
+    "y": 0,
+    "width": 64,
+    "height": 64,
+    "pixelRatio": 1
+  },
+  "woodland-pattern-overview": {
+    "x": 520,
+    "y": 0,
+    "width": 64,
+    "height": 64,
+    "pixelRatio": 2
+  }
+}

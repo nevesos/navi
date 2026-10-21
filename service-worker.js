@@ -30,6 +30,7 @@ function isShellAsset(url) {
   if (url.origin !== scopeUrl.origin || !url.pathname.startsWith(scopeUrl.pathname)) return false
   if (isVersionManifest(url) || url.pathname.includes('/api/')) return false
   return url.pathname.includes('/assets/') ||
+    (url.pathname.startsWith(`${scopeUrl.pathname}map-sprites/`) && url.pathname.endsWith('.json')) ||
     /\.(?:css|js|png|svg|webp|webmanifest)$/.test(url.pathname)
 }
 
@@ -331,6 +332,8 @@ self.addEventListener('fetch', (event) => {
     )
     return
   }
+  // Vite serves changing source modules at stable URLs; never cache them as immutable assets.
+  if (url.pathname.startsWith(`${scopeUrl.pathname}src/`)) return
   if (isAllowedTileRequest(request)) {
     const result = tileResult(request)
     event.respondWith(result.then(({ response }) => response))
