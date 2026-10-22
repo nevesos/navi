@@ -217,5 +217,12 @@
     "width": 64,
     "height": 64,
     "pixelRatio": 2
+  },
+  "railway-station": {
+    "x": 584,
+    "y": 0,
+    "width": 24,
+    "height": 24,
+    "pixelRatio": 1
   }
 }
