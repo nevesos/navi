@@ -26,6 +26,12 @@ function isVersionManifest(url) {
   return url.origin === scopeUrl.origin && url.pathname === `${scopeUrl.pathname}version.json`
 }
 
+function isLegalDocument(url) {
+  return url.origin === scopeUrl.origin &&
+    ['licenses', 'licenses/', 'licenses/index.html', 'licenses/packages.json', 'attributions.html']
+      .some(path => url.pathname === `${scopeUrl.pathname}${path}`)
+}
+
 function isShellAsset(url) {
   if (url.origin !== scopeUrl.origin || !url.pathname.startsWith(scopeUrl.pathname)) return false
   if (isVersionManifest(url) || url.pathname.includes('/api/')) return false
@@ -324,6 +330,15 @@ self.addEventListener('fetch', (event) => {
   const { request } = event
   const url = new URL(request.url)
   if (isVersionManifest(url)) return
+  if (request.method === 'GET' && isLegalDocument(url)) {
+    // Legal documents are separate resources, never an SPA shell fallback.
+    const legalUrl = new URL(request.url)
+    if (legalUrl.pathname.endsWith('/licenses') || legalUrl.pathname.endsWith('/licenses/index.html')) {
+      legalUrl.pathname = `${scopeUrl.pathname}licenses/`
+    }
+    event.respondWith(shellAssetResponse(new Request(legalUrl.href)))
+    return
+  }
   if (request.mode === 'navigate') {
     const result = navigationResult(request)
     event.respondWith(result.then(({ response }) => response))
